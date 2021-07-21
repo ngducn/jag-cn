@@ -1,0 +1,7 @@
+.search_box {
+  display: flex;
+  width: 100%;
+}
+.justify-content-between {
+  justify-content: space-between;
+}
