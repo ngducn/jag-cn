@@ -3,7 +3,10 @@ import { Container, Nav, Navbar } from "react-bootstrap";
 
 import "./style.css";
 
-const SideMenu = ({ handleCategory }) => {
+const SideMenu = ({ setCategory }) => {
+  const handleCategory = (eventKey, event) => {
+    setCategory(eventKey);
+  };
   return (
     <>
       <Navbar bg="light" variant="light">

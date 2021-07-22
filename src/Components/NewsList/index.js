@@ -1,6 +1,9 @@
 import React from "react";
 import SingleNews from "../SingleNews/index";
 const NewsList = ({ data, category }) => {
+  console.log(data);
+  let articles = data.articles;
+  console.log(articles);
   return (
     <>
       <h1> Current category {category}</h1>
@@ -11,8 +14,8 @@ const NewsList = ({ data, category }) => {
           gap: "1rem",
         }}
       >
-        {data &&
-          data.map((el, idx) => <SingleNews key={idx} singleData={el} />)}
+        {articles &&
+          articles.map((el, idx) => <SingleNews key={idx} singleData={el} />)}
       </div>
     </>
   );

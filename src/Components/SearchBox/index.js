@@ -1,26 +1,26 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Navbar,
   Container,
-  Nav,
   InputGroup,
   FormControl,
   Button,
   Col,
   Row,
 } from "react-bootstrap";
+
 import "./style.css";
 
-const SearchBox = ({ handleQuery }) => {
-  const [inputForm, setInputForm] = useState("");
+const SearchBox = ({ setQuery }) => {
+  const [searchInput, setSearchInput] = useState("haha");
+
   const handleInput = (e) => {
     e.preventDefault();
-    setInputForm(e.target.value);
+    setSearchInput(e.target.value);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    handleQuery(inputForm);
+  const confirmSearch = () => {
+    setQuery(searchInput);
   };
 
   return (
@@ -35,14 +35,13 @@ const SearchBox = ({ handleQuery }) => {
               <FormControl
                 aria-label="Example text with button addon"
                 aria-describedby="basic-addon1"
-                placeholder="Search headlines"
-                value={inputForm}
+                value={searchInput}
                 onChange={handleInput}
               />
               <Button
+                onClick={confirmSearch}
                 variant="outline-success"
                 id="button-addon1"
-                onClick={handleSubmit}
               >
                 Search
               </Button>

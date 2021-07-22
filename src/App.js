@@ -1,57 +1,61 @@
 import React, { useEffect, useState } from "react";
-import { Container } from "react-bootstrap";
 
-import MainPage from "./Components/MainPage/index";
+import NewsList from "./Components/NewsList";
+import PaginationItem from "./Components/Pagination";
 
 import SearchBox from "./Components/SearchBox/index";
+import SideMenu from "./Components/SideMenu";
 
 const myKey = process.env.REACT_APP_API_KEY;
 
 const App = () => {
-  const pageSize = 5;
-  const [newsList, setNewsList] = useState([]);
-  const [category, setCategory] = useState("");
+  const [totalPage, setTotalPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [data, setData] = useState([]);
   const [query, setQuery] = useState("");
-  const [pageNum, setPageNum] = useState(1);
-  const [totalPageNum, setTotalPageNum] = useState(10);
+  const [category, setCatgory] = useState("");
 
   useEffect(() => {
+    let pageLimit = 5;
     const getData = async () => {
-      let url = "https://newsapi.org/v2/top-headlines?country=us";
+      let baseUrl = "https://nesssssswsapi.org/v2";
+      let withQuery = `/everything?q=${query}`;
+      let noQuery = "/top-headlines?country=us";
+      let lastPart = `&apiKey=${myKey}`;
+      let fixedPart = `&page=${currentPage}&pageSize=${pageLimit}`;
+      let categoryPart = "&category=business";
+      let url = baseUrl + noQuery + fixedPart + lastPart;
 
       if (query) {
-        url = "https://newsapi.org/v2/everything?";
+        url = baseUrl + withQuery + fixedPart + lastPart;
+      } else if (category) {
+        url = baseUrl + noQuery + categoryPart + fixedPart + lastPart;
       }
-      url += `&category=${category}&pageSize=${pageSize}&q=${query}&page=${pageNum}&apiKey=${myKey}`;
 
-      const data = await fetch(url);
-      const result = await data.json();
-      setNewsList(result.articles);
-      setTotalPageNum(Math.ceil(result.totalResults / pageSize));
-      window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+      try {
+        const data = await fetch(url);
+        const result = await data.json();
+        console.log(result);
+        setTotalPage(Math.ceil(result.totalResults / pageLimit));
+        setData(result);
+      } catch (error) {
+        // console.log("e");
+        setData({ articles: [{ title: "ahhi", description: "not borkne" }] });
+      }
     };
     getData();
-  }, [category, query, pageNum]);
-
-  const handleCategory = (eventKey, event) => {
-    setCategory(eventKey);
-  };
-
-  const handleQuery = (searchInput) => {
-    setQuery(searchInput);
-  };
+  }, [currentPage, query, category]);
 
   return (
     <>
-      <SearchBox handleQuery={handleQuery} />
-      <MainPage
-        data={newsList}
-        category={category}
-        handleCategory={handleCategory}
-        totalPageNum={totalPageNum}
-        setPageNum={setPageNum}
-        pageNum={pageNum}
+      <SearchBox setQuery={setQuery} />
+      <SideMenu setCategory={setCatgory} />
+      <PaginationItem
+        setCurrentPage={setCurrentPage}
+        currentPage={currentPage}
+        totalPage={totalPage}
       />
+      <NewsList data={data} category={category} />
     </>
   );
 };
